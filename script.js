@@ -84,4 +84,28 @@
       }
     });
   }
+  /* Scribble underline: draws as you scroll down, retracts to the doodle as you scroll back up */
+  var line = document.querySelector('.scribble-line');
+  if (line) {
+    var len = 100; // matches pathLength on the path, so it is independent of screen size
+    var DISTANCE = 260;
+    var ticking = false;
+
+    line.style.strokeDasharray = len + ' ' + len;
+
+    function draw() {
+      var p = reduceMotion ? 1 : Math.min(Math.max(window.scrollY / DISTANCE, 0), 1);
+      line.style.strokeDashoffset = String(len * (1 - p));
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(draw);
+      }
+    }, { passive: true });
+
+    draw();
+  }
 })();

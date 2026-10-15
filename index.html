@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Subhadeep Paul</title>
 <meta name="description" content="Subhadeep Paul is a Mechanical Engineering undergraduate at NIT Durgapur moving into software development and backend engineering.">
-<meta name="theme-color" content="#141414">
+<meta name="theme-color" content="#faf6f0">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%23f4f1ea'%3ESP%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -54,16 +54,35 @@
 <main id="top">
 
   <section class="hero">
-    <svg class="rings" aria-hidden="true" focusable="false"><use href="#rings"/></svg>
     <div class="wrap">
-      <h1 aria-label="Subhadeep Paul">
-        <span><i>Subhadeep</i></span>
-        <span><i>Paul</i></span>
-      </h1>
-      <p class="hero-lede">Undergrad at NIT Durgapur, moving into software development.</p>
-      <dl class="hero-meta">
-        <div><dt>Status</dt><dd>Open to SDE internships</dd></div>
-        <div><dt>Location</dt><dd>Durgapur, West Bengal, India</dd></div>
+      <div class="hero-grid">
+        <div>
+          <h1><strong>I'm Subhadeep</strong>, an undergrad at NIT Durgapur who builds backends.</h1>
+          <p class="hero-lede">I build full-stack projects with Spring Boot and React, learn by taking systems apart and rebuilding them, and I'm <span class="mark">open to SDE internships<svg class="scribble" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="scribble-line" pathLength="100" d="M2 16 C 30 11, 60 20, 95 15 S 160 19, 205 15 S 240 17, 252 16"/><path class="scribble-doodle" d="M250 17 L264 5 L257 20 L276 4 L268 21 L288 6 L281 19 L298 9"/></svg></span>.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#projects">See projects</a>
+            <a class="btn-icon" href="https://github.com/devsensei404" target="_blank" rel="noopener" aria-label="GitHub, @devsensei404" title="GitHub @devsensei404">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero-card">
+            <div class="portrait" id="portrait" role="group" tabindex="0" aria-label="Profile photo card. Click or press Enter to flip.">
+              <div class="portrait-inner">
+                <div class="face face-front">
+                  <img src="assets/photo.jpg" alt="Portrait of Subhadeep Paul" onerror="document.getElementById('portrait').remove()">
+                </div>
+                <div class="face face-back">
+                <img src="assets/back.jpg" alt="Alternate profile picture" onerror="this.remove()">
+              </div>
+            </div>
+        </div>
+      </div>
+      <dl class="stats">
+        <div><dt>9.05</dt><dd>CGPA (first year)</dd></div>
+        <div><dt>3</dt><dd>Projects, one live</dd></div>
+        <div><dt>Junior Coordinator</dt><dd>GLUG, NIT Durgapur</dd></div>
+        <div><dt>Open</dt><dd>to SDE internships</dd></div>
       </dl>
     </div>
   </section>
@@ -75,17 +94,6 @@
           <h2>About</h2>
         </div>
         <div>
-          <div class="portrait" id="portrait" role="group" tabindex="0" aria-label="Profile photo card. Click or press Enter to flip.">
-            <div class="portrait-inner">
-              <div class="face face-front">
-                <img src="assets/photo.jpg" alt="Portrait of Subhadeep Paul" onerror="document.getElementById('portrait').remove()">
-              </div>
-              <div class="face face-back">
-                <p>Want ASCII art from your own photos?</p>
-                <a class="ulink" href="https://glyph-x.vercel.app" target="_blank" rel="noopener" tabindex="-1">Visit GlyphX</a>
-              </div>
-            </div>
-          </div>
           <p class="about-text">I'm a Mechanical Engineering undergrad at NIT Durgapur, pivoting into software development. I build full-stack projects with Spring Boot backends, React frontends, JWT auth and role-based access control, and I learn best by taking a system apart and rebuilding it.</p>
           <p class="about-text">I'm building a foundation in data structures, algorithms and problem solving, with a growing focus on backend engineering and scalable systems. I help build tools for real users in my campus Linux and open-source community, GLUG. Outside code, I volunteer at a local animal shelter.</p>
         </div>
@@ -291,8 +299,8 @@
 
 <footer>
   <div class="wrap">
-    <span>Crafted with love by <a class="ulink" href="https://github.com/devsensei404" target="_blank" rel="noopener">@devsensei404</a></span>
-    <span>Durgapur, India</span>
+    <span>Crafted with <svg class="heart" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" role="img" aria-label="love"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> by <a class="ulink" href="https://github.com/devsensei404" target="_blank" rel="noopener">@devsensei404</a></span>
+    <span>&copy; 2026 Subhadeep Paul</span>
   </div>
 </footer>
 
