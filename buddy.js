@@ -6,7 +6,11 @@
   'use strict';
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  // Touch phones/tablets have no hover, so Buddy works differently there:
+  // it follows your finger while you touch, rests in the bottom-right corner otherwise,
+  // and perches by whatever is in the middle of the screen as you scroll.
+  var touchMode = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   /* ---------------------------------------------------------------
      Things it can say. {t} becomes the project title. Edit freely.
@@ -40,6 +44,7 @@
   var ENTER_DELAY = 300, LEAVE_DELAY = 350;  // ms of hovering before it hops over / follows again
   var CURSOR_OFFSET = { x: 20, y: 16 };      // where it trails relative to the cursor
   var SIZE = 44;
+  var navH = 56;               // measured below
 
   /* ---------------------------------------------------------------
      Build the character
@@ -78,7 +83,7 @@
   var pos = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
   var home = { x: 0, y: 0 };
   var mouse = { x: window.innerWidth * 0.6, y: window.innerHeight * 0.5 };
-  var mouseSpeed = 0, lastMoveAt = 0, lastMoveT = 0;
+  var mouseSpeed = 0, lastMoveAt = 0, lastMoveT = 0, touching = false;
   var hoverTarget = null, perchTarget = null;
   var enterTimer = 0, leaveTimer = 0, sayTimer = 0, wakeTimer = 0;
   var jump = null;
@@ -148,6 +153,7 @@
     var n = nav.getBoundingClientRect(), a = name.getBoundingClientRect(), l = links.getBoundingClientRect();
     var gap = l.left - a.right;
     var x = gap > SIZE + 40 ? a.right + gap / 2 - SIZE / 2 : l.left - SIZE - 16;
+    navH = nav.offsetHeight;
     home = { x: x, y: nav.offsetHeight - SIZE + 3 };   // offsetHeight: unaffected by the nav's slide-in animation
   }
 
@@ -156,6 +162,13 @@
     if (target.id === 'portrait') {                       // perch on the top edge of the photo card
       var c = target.getBoundingClientRect();
       return { x: c.right - SIZE - 18, y: c.top - SIZE + 8 };
+    }
+    if (touchMode) {                                      // phones: sit on the card's top-right edge, stay below the nav
+      var b = target.getBoundingClientRect();
+      return {
+        x: clamp(b.right - SIZE - 6, 8, window.innerWidth - SIZE - 8),
+        y: clamp(b.top - SIZE + 12, navH + 6, Math.max(navH + 6, b.bottom - SIZE - 4))
+      };
     }
     var h = target.querySelector('h3, h2') || target;
     if (target.matches('.interests-text')) {              // beside the first line of the paragraph
@@ -220,8 +233,14 @@
     lastFrame = t;
 
     if (mode === 'follow') {
-      var tx = clamp(mouse.x + CURSOR_OFFSET.x, 8, window.innerWidth - SIZE - 8);
-      var ty = clamp(mouse.y + CURSOR_OFFSET.y, 8, window.innerHeight - SIZE - 8);
+      var tx, ty;
+      if (touchMode && !touching) {                  // nobody is touching: wait in the bottom-right corner
+        tx = window.innerWidth - SIZE - 12;
+        ty = window.innerHeight - SIZE - 16;
+      } else {
+        tx = clamp(mouse.x + CURSOR_OFFSET.x, 8, window.innerWidth - SIZE - 8);
+        ty = clamp(mouse.y + CURSOR_OFFSET.y, 8, window.innerHeight - SIZE - 8);
+      }
       spring(tx, ty, dt, 110, 14);
 
       if (t - lastMoveAt > 6000 && t - lastSayAt > 12000) say(pick('idle'));
@@ -270,6 +289,7 @@
     wakeTimer = setTimeout(function () {
       mode = 'follow';
       vel.y = -260;                                  // little hop off the ledge
+      if (touchMode) hoverTarget = readingTarget();
       if (window.scrollY < SLEEP_AT && !hoverTarget) { goHome(); return; }
       if (hoverTarget) setHover(hoverTarget, true);
     }, 800);
@@ -345,7 +365,7 @@
     enterTimer = setTimeout(function fire() {
       if (hoverTarget !== target) return;
       if (now() - lastMoveT > 120) mouseSpeed = 0;
-      if (mouseSpeed > 1.1) { enterTimer = setTimeout(fire, 120); return; }   // still sweeping through
+      if (!touchMode && mouseSpeed > 1.1) { enterTimer = setTimeout(fire, 120); return; }   // still sweeping through
       startJump(target);
     }, ENTER_DELAY);
   }
@@ -363,14 +383,27 @@
     else if (mode === 'perch') reconcile();
   }
 
+  // Touch: the thing crossing the middle of the screen counts as "being read"
+  function readingTarget() {
+    var y = window.innerHeight * 0.5;
+    var list = document.querySelectorAll(SELECTOR);
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i].getBoundingClientRect();
+      if (r.top <= y && r.bottom >= y) return list[i];
+    }
+    return null;
+  }
+
   /* ---------------------------------------------------------------
      Events
      --------------------------------------------------------------- */
   document.addEventListener('pointerover', function (e) {
+    if (touchMode) return;
     setHover(e.target.closest ? e.target.closest(SELECTOR) : null);
   });
-  document.documentElement.addEventListener('mouseleave', function () { setHover(null); });
+  document.documentElement.addEventListener('mouseleave', function () { if (!touchMode) setHover(null); });
   document.addEventListener('focusin', function (e) {
+    if (touchMode) return;
     var t = e.target.closest ? e.target.closest(SELECTOR) : null;
     if (t) setHover(t);
   });
@@ -385,6 +418,21 @@
     lastMoveAt = now();
     mouse.x = e.clientX; mouse.y = e.clientY;
   }, { passive: true });
+
+  function touchAt(e) {
+    var t = e.touches && e.touches[0];
+    if (!t) return;
+    mouse.x = t.clientX; mouse.y = t.clientY;
+    lastMoveAt = now();
+    touching = true;
+  }
+  function touchDone() { touching = false; lastMoveAt = now(); }
+  if (touchMode) {
+    window.addEventListener('touchstart', touchAt, { passive: true });
+    window.addEventListener('touchmove', touchAt, { passive: true });
+    window.addEventListener('touchend', touchDone, { passive: true });
+    window.addEventListener('touchcancel', touchDone, { passive: true });
+  }
 
   var card = document.getElementById('portrait');
   if (card) card.addEventListener('click', function () {
@@ -405,8 +453,11 @@
       else if ((mode === 'follow' || mode === 'perch' || mode === 'jump') && y < SLEEP_AT) goHome();
       else if (mode === 'perch' || mode === 'follow') {
         // Content moved under a stationary cursor: refresh what's being hovered
-        var under = document.elementFromPoint(mouse.x, mouse.y);
-        setHover(under && under.closest ? under.closest(SELECTOR) : null);
+        if (touchMode) setHover(readingTarget());
+        else {
+          var under = document.elementFromPoint(mouse.x, mouse.y);
+          setHover(under && under.closest ? under.closest(SELECTOR) : null);
+        }
       }
     });
   }, { passive: true });

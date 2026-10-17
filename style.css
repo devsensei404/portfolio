@@ -587,4 +587,4 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .buddy.is-below .buddy-bubble { bottom: auto; top: calc(100% + 6px); transform-origin: 50% 0; }
 .buddy.is-talking .buddy-bubble { opacity: 1; transform: translateX(var(--bx)) scale(1); }
 
-@media (prefers-reduced-motion: reduce), (hover: none) { .buddy { display: none; } }
+@media (prefers-reduced-motion: reduce) { .buddy { display: none; } }
