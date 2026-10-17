@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script>if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-split');</script>
 </head>
 <body>
 
@@ -49,6 +50,7 @@
       </ul>
     </nav>
   </div>
+  <span class="nav-progress" aria-hidden="true"></span>
 </header>
 
 <main id="top">
@@ -77,6 +79,7 @@
               </div>
             </div>
         </div>
+      </div>
       </div>
       <dl class="stats">
         <div><dt>9.05</dt><dd>CGPA (first year)</dd></div>
@@ -259,7 +262,7 @@
   <section class="closing" id="contact">
     <svg class="rings" aria-hidden="true" focusable="false"><use href="#rings"/></svg>
     <div class="wrap">
-      <h2 class="closing-title">Let&rsquo;s build <span>useful software together.</span></h2>
+      <h2 class="closing-title">Let&rsquo;s build <span class="tail">useful software together.</span></h2>
 
       <nav class="closing-nav" aria-label="Footer">
         <a href="#top">Home</a>
@@ -305,5 +308,6 @@
 </footer>
 
 <script src="script.js" defer></script>
+<script src="buddy.js" defer></script>
 </body>
 </html>
