@@ -93,6 +93,8 @@
   /* ---------------------------------------------------------------
      Helpers
      --------------------------------------------------------------- */
+  // Stacked, single-column layouts (touch devices and narrow windows) have no free margin to perch in
+  function isCompact() { return touchMode || window.innerWidth <= 760; }
   function clamp(v, a, b) { return Math.min(Math.max(v, a), b); }
   function now() { return performance.now(); }
 
@@ -163,12 +165,13 @@
       var c = target.getBoundingClientRect();
       return { x: c.right - SIZE - 18, y: c.top - SIZE + 8 };
     }
-    if (touchMode) {                                      // phones: sit on the card's top-right edge, stay below the nav
+    if (isCompact()) {                                    // phones / narrow windows: never cover the text
       var b = target.getBoundingClientRect();
-      return {
-        x: clamp(b.right - SIZE - 6, 8, window.innerWidth - SIZE - 8),
-        y: clamp(b.top - SIZE + 12, navH + 6, Math.max(navH + 6, b.bottom - SIZE - 4))
-      };
+      var topY = b.top - SIZE + 12;
+      if (topY >= navH + 6) {                             // room above the card: sit on its top-right edge
+        return { x: clamp(b.right - SIZE - 6, 8, window.innerWidth - SIZE - 8), y: topY };
+      }
+      return { x: window.innerWidth - SIZE - 12, y: window.innerHeight - SIZE - 16 };   // card fills the screen: wait in the corner
     }
     var h = target.querySelector('h3, h2') || target;
     if (target.matches('.interests-text')) {              // beside the first line of the paragraph
@@ -261,7 +264,8 @@
 
     } else if (mode === 'perch') {
       var a = anchor(perchTarget);
-      pos.x = a.x; pos.y = a.y; vel.x = vel.y = 0;
+      if (isCompact()) spring(a.x, a.y, dt, 110, 15);     // glide between the card edge and the corner
+      else { pos.x = a.x; pos.y = a.y; vel.x = vel.y = 0; }
       if (t - perchedAt > nextReadingSay && t - lastSayAt > 6000) {
         say(pick('reading'));
         nextReadingSay = (t - perchedAt) + 9000 + Math.random() * 5000;
